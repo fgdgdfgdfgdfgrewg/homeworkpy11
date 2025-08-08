@@ -1,5 +1,4 @@
-from .product import Product
-
+from .product import BaseProduct
 
 class Category:
     product_count = 0
@@ -10,9 +9,10 @@ class Category:
         self.__products = products
 
         # Считаем только валидные продукты
-        valid_products = [p for p in products if isinstance(p, Product)]
+        valid_products = [p for p in products if isinstance(p, BaseProduct)]
         Category.product_count += len(valid_products)
 
+    # ... остальной код без изменений ...
     @classmethod
     def reset_counter(cls):
         """Сброс счетчика для тестирования"""

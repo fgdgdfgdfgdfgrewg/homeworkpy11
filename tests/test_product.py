@@ -124,3 +124,22 @@ def test_large_quantities_addition():
     p1 = Product("P1", "Desc", 10.0, 10000)
     p2 = Product("P2", "Desc", 20.0, 20000)
     assert p1 + p2 == (10.0 * 10000) + (20.0 * 20000)
+
+def test_base_product_abstract():
+    with pytest.raises(TypeError):
+        BaseProduct()
+
+def test_mixin_logging(capsys):
+    p = Product("Test", "Desc", 100, 5)
+    captured = capsys.readouterr()
+    assert "Создан объект класса Product с параметрами: ('Test', 'Desc', 100, 5)" in captured.out
+
+def test_smartphone_mixin_logging(capsys):
+    s = Smartphone("S", "Desc", 500, 3, 90.0, "Model", 128, "Black")
+    captured = capsys.readouterr()
+    assert "Smartphone" in captured.out
+
+def test_grass_mixin_logging(capsys):
+    g = LawnGrass("G", "Desc", 50, 10, "Russia", "7 days", "Green")
+    captured = capsys.readouterr()
+    assert "LawnGrass" in captured.out

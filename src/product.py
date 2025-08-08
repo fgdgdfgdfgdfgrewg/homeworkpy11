@@ -1,15 +1,54 @@
-class Product:
+from abc import ABC, abstractmethod
+
+class BaseProduct(ABC):
+    @property
+    @abstractmethod
+    def name(self):
+        pass
+
+    @property
+    @abstractmethod
+    def description(self):
+        pass
+
+    @property
+    @abstractmethod
+    def price(self):
+        pass
+
+    @property
+    @abstractmethod
+    def quantity(self):
+        pass
+
+
+class CreationLoggerMixin:
+    def __init__(self, *args, **kwargs):
+        print(f"Создан объект класса {self.__class__.__name__} с параметрами: {args}, {kwargs}")
+        super().__init__()
+
+
+class Product(CreationLoggerMixin, BaseProduct):
     def __init__(self, name, description, price, quantity):
-        self.name = name
-        self.description = description
-        self._price = price  # Используем защищенный атрибут
-        self.quantity = quantity
+        super().__init__(name, description, price, quantity)
+        self._name = name
+        self._description = description
+        self._price = price
+        self._quantity = quantity
 
         # Валидация при инициализации
         if price < 0:
             raise ValueError("Цена не может быть отрицательной")
         if quantity < 0:
             raise ValueError("Количество не может быть отрицательным")
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def description(self):
+        return self._description
 
     @property
     def price(self):
@@ -28,7 +67,6 @@ class Product:
         if type(self) != type(other):
             raise TypeError("Нельзя складывать товары разных классов")
         return self.price * self.quantity + other.price * other.quantity
-
 
 class Smartphone(Product):
     def __init__(self, name, description, price, quantity, efficiency, model, memory, color):
