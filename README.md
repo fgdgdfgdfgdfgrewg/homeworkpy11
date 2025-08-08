@@ -2,16 +2,16 @@
 
 Проект реализует систему учета товаров для интернет-магазина с использованием ООП в Python.
 
-## Структура проекта
 project_root/
 ├── src/
-│ ├── init.py
-│ ├── product.py # Базовые классы товаров
-│ └── category.py # Классы категорий
+│   ├── __init__.py
+│   ├── product.py             # Базовые классы товаров
+│   ├── category.py            # Классы категорий
+│   └── exceptions.py          # Пользовательские исключения
 ├── tests/
-│ ├── test_product.py
-│ └── test_category.py
-├── main.py # Пример использования
+│   ├── test_product.py        # Тесты для продуктов
+│   └── test_category.py       # Тесты для категорий
+├── main.py                    # Пример использования
 ├── requirements.txt
 └── README.md
 

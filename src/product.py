@@ -1,6 +1,11 @@
 from abc import ABC, abstractmethod
 
 
+class ZeroQuantityError(ValueError):
+    """Пользовательское исключение для товаров с нулевым количеством"""
+    pass
+
+
 class BaseProduct(ABC):
     @property
     @abstractmethod
@@ -31,16 +36,18 @@ class CreationLoggerMixin:
 
 class Product(CreationLoggerMixin, BaseProduct):
     def __init__(self, name, description, price, quantity):
-        self._name = name
-        self._description = description
-        self._price = price
-        self._quantity = quantity
-
-        # Валидация
+        # Валидация параметров
+        if quantity == 0:
+            raise ZeroQuantityError("Товар с нулевым количеством не может быть добавлен")
         if price < 0:
             raise ValueError("Цена не может быть отрицательной")
         if quantity < 0:
             raise ValueError("Количество не может быть отрицательным")
+
+        self._name = name
+        self._description = description
+        self._price = price
+        self._quantity = quantity
 
         # Вызов миксина после инициализации атрибутов
         super().__init__(name, description, price, quantity)

@@ -1,4 +1,5 @@
-from .product import BaseProduct
+from .product import BaseProduct, Product
+
 
 class Category:
     product_count = 0
@@ -12,7 +13,6 @@ class Category:
         valid_products = [p for p in products if isinstance(p, BaseProduct)]
         Category.product_count += len(valid_products)
 
-    # ... остальной код без изменений ...
     @classmethod
     def reset_counter(cls):
         """Сброс счетчика для тестирования"""
@@ -28,3 +28,17 @@ class Category:
         self.__products.append(product)
         if isinstance(product, Product):
             Category.product_count += 1
+
+    def middle_price(self):
+        """
+        Рассчитывает среднюю цену товаров в категории
+        Возвращает 0, если в категории нет товаров
+        """
+        try:
+            # Суммируем цены всех товаров
+            total_price = sum(product.price for product in self.__products)
+            # Делим сумму на количество товаров
+            return total_price / len(self.__products)
+        except ZeroDivisionError:
+            # Обрабатываем случай пустой категории
+            return 0

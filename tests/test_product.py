@@ -1,5 +1,5 @@
 import pytest
-from src.product import Product, Smartphone, LawnGrass, BaseProduct
+from src.product import Product, Smartphone, LawnGrass, BaseProduct, ZeroQuantityError
 
 
 @pytest.fixture
@@ -128,12 +128,7 @@ def test_instance_types(sample_product, sample_smartphone, sample_grass):
     assert isinstance(sample_grass, Product)
 
 
-# Тесты для граничных случаев
-def test_zero_quantity_addition():
-    p1 = Product("P1", "Desc", 100.0, 0)
-    p2 = Product("P2", "Desc", 200.0, 0)
-    assert p1 + p2 == 0
-
+# УДАЛЕН тест test_zero_quantity_addition, так как создание с нулевым количеством запрещено
 
 def test_large_quantities_addition():
     p1 = Product("P1", "Desc", 10.0, 10000)
@@ -162,3 +157,44 @@ def test_grass_mixin_logging(capsys):
     g = LawnGrass("G", "Desc", 50, 10, "Russia", "7 days", "Green")
     captured = capsys.readouterr()
     assert "LawnGrass" in captured.out
+
+
+# Новые тесты для проверки нулевого количества
+def test_zero_quantity_product_creation():
+    """Тест создания продукта с нулевым количеством"""
+    with pytest.raises(ZeroQuantityError) as excinfo:
+        Product("Test", "Desc", 100.0, 0)
+    assert "Товар с нулевым количеством не может быть добавлен" in str(excinfo.value)
+
+
+def test_smartphone_zero_quantity_creation():
+    """Тест создания смартфона с нулевым количеством"""
+    with pytest.raises(ZeroQuantityError) as excinfo:
+        Smartphone("S", "Desc", 500, 0, 90.0, "Model", 128, "Black")
+    assert "Товар с нулевым количеством не может быть добавлен" in str(excinfo.value)
+
+
+def test_lawn_grass_zero_quantity_creation():
+    """Тест создания газонной травы с нулевым количеством"""
+    with pytest.raises(ZeroQuantityError) as excinfo:
+        LawnGrass("G", "Desc", 50, 0, "Russia", "7 days", "Green")
+    assert "Товар с нулевым количеством не может быть добавлен" in str(excinfo.value)
+
+
+def test_zero_quantity_error_inheritance():
+    """Тест, что ZeroQuantityError является подклассом ValueError"""
+    assert issubclass(ZeroQuantityError, ValueError)
+
+
+def test_zero_quantity_and_negative_price():
+    """Тест комбинации нулевого количества и отрицательной цены"""
+    with pytest.raises(ZeroQuantityError) as excinfo:
+        Product("P1", "Desc", -100.0, 0)
+    assert "Товар с нулевым количеством не может быть добавлен" in str(excinfo.value)
+
+
+def test_exception_message_customization():
+    """Тест кастомизации сообщения об ошибке"""
+    with pytest.raises(ZeroQuantityError) as excinfo:
+        raise ZeroQuantityError("Кастомное сообщение об ошибке")
+    assert "Кастомное сообщение об ошибке" in str(excinfo.value)
