@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class BaseProduct(ABC):
     @property
     @abstractmethod
@@ -25,22 +26,24 @@ class BaseProduct(ABC):
 class CreationLoggerMixin:
     def __init__(self, *args, **kwargs):
         print(f"Создан объект класса {self.__class__.__name__} с параметрами: {args}, {kwargs}")
-        super().__init__()
+        # Не вызываем super().__init__() здесь, так как это миксин
 
 
 class Product(CreationLoggerMixin, BaseProduct):
     def __init__(self, name, description, price, quantity):
-        super().__init__(name, description, price, quantity)
         self._name = name
         self._description = description
         self._price = price
         self._quantity = quantity
 
-        # Валидация при инициализации
+        # Валидация
         if price < 0:
             raise ValueError("Цена не может быть отрицательной")
         if quantity < 0:
             raise ValueError("Количество не может быть отрицательным")
+
+        # Вызов миксина после инициализации атрибутов
+        super().__init__(name, description, price, quantity)
 
     @property
     def name(self):
@@ -60,6 +63,10 @@ class Product(CreationLoggerMixin, BaseProduct):
             raise ValueError("Цена не может быть отрицательной")
         self._price = value
 
+    @property
+    def quantity(self):
+        return self._quantity
+
     def __repr__(self):
         return f"{self.__class__.__name__}('{self.name}', '{self.description}', {self.price}, {self.quantity})"
 
@@ -67,6 +74,7 @@ class Product(CreationLoggerMixin, BaseProduct):
         if type(self) != type(other):
             raise TypeError("Нельзя складывать товары разных классов")
         return self.price * self.quantity + other.price * other.quantity
+
 
 class Smartphone(Product):
     def __init__(self, name, description, price, quantity, efficiency, model, memory, color):

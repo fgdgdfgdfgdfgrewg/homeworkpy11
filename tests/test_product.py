@@ -1,8 +1,7 @@
 import pytest
-from src.product import Product, Smartphone, LawnGrass
+from src.product import Product, Smartphone, LawnGrass, BaseProduct
 
 
-# Фикстуры
 @pytest.fixture
 def sample_product():
     return Product("Test Product", "Description", 100.0, 5)
@@ -18,7 +17,23 @@ def sample_grass():
     return LawnGrass("Grass", "Desc", 50.0, 10, "Russia", "7 days", "Green")
 
 
-# Тесты
+def test_product_creation(sample_product):
+    assert sample_product.name == "Test Product"
+    assert sample_product.description == "Description"
+    assert sample_product.price == 100.0
+    assert sample_product.quantity == 5
+
+
+def test_smartphone_creation(sample_smartphone):
+    assert sample_smartphone.model == "ModelX"
+    assert sample_smartphone.memory == 128
+
+
+def test_abstract_base_class():
+    with pytest.raises(TypeError):
+        BaseProduct()
+
+
 def test_product_repr(sample_product):
     repr_str = repr(sample_product)
     assert "Test Product" in repr_str
@@ -125,19 +140,23 @@ def test_large_quantities_addition():
     p2 = Product("P2", "Desc", 20.0, 20000)
     assert p1 + p2 == (10.0 * 10000) + (20.0 * 20000)
 
+
 def test_base_product_abstract():
     with pytest.raises(TypeError):
         BaseProduct()
+
 
 def test_mixin_logging(capsys):
     p = Product("Test", "Desc", 100, 5)
     captured = capsys.readouterr()
     assert "Создан объект класса Product с параметрами: ('Test', 'Desc', 100, 5)" in captured.out
 
+
 def test_smartphone_mixin_logging(capsys):
     s = Smartphone("S", "Desc", 500, 3, 90.0, "Model", 128, "Black")
     captured = capsys.readouterr()
     assert "Smartphone" in captured.out
+
 
 def test_grass_mixin_logging(capsys):
     g = LawnGrass("G", "Desc", 50, 10, "Russia", "7 days", "Green")
